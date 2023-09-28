@@ -61,30 +61,33 @@ const App = () => {
               setNotification(null);
             }, 3000);
           })
-          .catch(() => {
-            setError(
-              `Information of ${name.name} has already been removed from server!`
-            );
-            setPersons(persons.filter((n) => n.id !== name.id));
-            setNewName("");
-            setNewNumber("");
+          .catch((error) => {
+            setError(error.response.data.error);
             setTimeout(() => {
               setError(null);
-            }, 5000);
+            }, 3000);
           });
       }
     } else {
       const name = { name: newName, number: newNumber };
 
-      personService.create(name).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-        setNotification(`Added ${returnedPerson.name}`);
-        setTimeout(() => {
-          setNotification(null);
-        }, 3000);
-      });
+      personService
+        .create(name)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewNumber("");
+          setNotification(`Added ${returnedPerson.name}`);
+          setTimeout(() => {
+            setNotification(null);
+          }, 3000);
+        })
+        .catch((error) => {
+          setError(error.response.data.error);
+          setTimeout(() => {
+            setError(null);
+          }, 3000);
+        });
     }
   };
 
